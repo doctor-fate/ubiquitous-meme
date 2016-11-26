@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>hadoop-bmstu</groupId>
-    <artifactId>L2</artifactId>
+    <artifactId>L3</artifactId>
     <version>1.0.0</version>
 
     <dependencies>
