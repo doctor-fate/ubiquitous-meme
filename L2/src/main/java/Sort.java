@@ -45,6 +45,4 @@ public class Sort implements Tool {
     public void setConf(Configuration configuration) {
         this.configuration = configuration;
     }
-
-
 }
