@@ -1,0 +1,14 @@
+A = LOAD 'airports.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (code:int, name:chararray);
+A = FILTER A BY code > 0;
+
+F = LOAD 'flights.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage();
+F = FOREACH F GENERATE (int) $14 AS code, (float) $18 AS delay;
+F = FILTER F BY code > 0 AND delay > 0;
+
+AF = JOIN A BY code, F by code;
+J = FOREACH AF GENERATE A::code AS code, A::name AS name, F::delay AS delay;
+
+G = GROUP J BY (code, name);
+R = FOREACH G GENERATE CONCAT(CONCAT('"', group.name), '"'), MIN(J.delay), MAX(J.delay), AVG(J.delay);
+
+dump R;
