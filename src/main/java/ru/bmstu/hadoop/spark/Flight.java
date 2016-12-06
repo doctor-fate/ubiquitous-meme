@@ -3,7 +3,7 @@ package ru.bmstu.hadoop.spark;
 import scala.Serializable;
 
 class Flight implements Serializable {
-    static Flight parseFlight(String s) {
+    static Flight parseLine(String s) {
         String[] split = s.split(",");
         Flight f = new Flight();
         f.cancelled = split[19].equals("1.00");

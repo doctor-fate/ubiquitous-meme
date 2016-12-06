@@ -10,24 +10,10 @@ import java.util.Optional;
 public class AirportJoinMapper extends Mapper<LongWritable, Text, CompositeWritable, FlightAirportWritable> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        AirportWritable w = AirportWritable.parseAirport(value.toString());
-        Optional<Integer> opt = getAirport(value.toString());
+        Optional<AirportWritable> opt = AirportWritable.parseLine(value.toString());
         if (opt.isPresent()) {
-            int airport = opt.get();
-            context.write(new CompositeWritable(airport, 0), new FlightAirportWritable(w));
+            AirportWritable w = opt.get();
+            context.write(new CompositeWritable(w.getCode(), 0), new FlightAirportWritable(w));
         }
-    }
-
-    private Optional<Integer> getAirport(String s) {
-        String[] split = s.split(",", 2);
-        String i = split[0].replace("\"", "").trim();
-        try {
-            int n = Integer.parseInt(i);
-            return Optional.of(n);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.empty();
     }
 }

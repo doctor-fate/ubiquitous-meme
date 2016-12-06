@@ -8,26 +8,30 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FlightWritable implements Writable {
-    static Optional<FlightWritable> parseFlight(String s) {
+    static Optional<FlightWritable> parseLine(String s) {
         String[] split = s.split(",");
+        FlightWritable w = null;
         try {
-            FlightWritable w = new FlightWritable();
-            if (!split[19].equals("1.00")) {
+            w = new FlightWritable();
+            w.code = Integer.parseInt(split[14]);
+            boolean cancelled = split[19].equals("1.00");
+            if (!cancelled) {
                 w.delay = Float.parseFloat(split[18]);
             }
-            return Optional.of(w);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return Optional.ofNullable(w);
     }
 
     public void write(DataOutput out) throws IOException {
+        out.writeInt(code);
         out.writeFloat(delay);
     }
 
     public void readFields(DataInput in) throws IOException {
+        code = in.readInt();
         delay = in.readFloat();
     }
 
@@ -39,5 +43,10 @@ public class FlightWritable implements Writable {
         return delay;
     }
 
+    int getCode() {
+        return code;
+    }
+
+    private int code;
     private float delay;
 }

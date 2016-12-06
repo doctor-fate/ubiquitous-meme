@@ -9,22 +9,22 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FlightWritable implements WritableComparable<FlightWritable> {
-    static Optional<FlightWritable> parseFlight(String s) {
+    static Optional<FlightWritable> parseLine(String s) {
         String[] split = s.split(",");
+        FlightWritable w = null;
         try {
-            FlightWritable w = new FlightWritable();
+            w = new FlightWritable();
             w.destination = Integer.parseInt(split[14]);
             w.cancelled = split[19].equals("1.00");
             if (!w.cancelled) {
                 w.time = Float.parseFloat(split[21]);
                 w.delay = Float.parseFloat(split[18]);
             }
-            return Optional.of(w);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return Optional.ofNullable(w);
     }
 
     public int compareTo(@NotNull FlightWritable o) {

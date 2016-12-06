@@ -23,8 +23,8 @@ public class Main {
     }
 
     private static Tuple2<OriginDestination, Flight> parseFlight(String s) {
-        OriginDestination e = OriginDestination.parseOriginDestination(s);
-        Flight f = Flight.parseFlight(s);
+        OriginDestination e = OriginDestination.parseLine(s);
+        Flight f = Flight.parseLine(s);
         return new Tuple2<>(e, f);
     }
 

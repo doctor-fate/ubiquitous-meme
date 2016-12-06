@@ -10,12 +10,10 @@ import java.util.Optional;
 public class SortMapper extends Mapper<LongWritable, Text, FlightWritable, Text> {
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        Optional<FlightWritable> opt = FlightWritable.parseFlight(value.toString());
+        Optional<FlightWritable> opt = FlightWritable.parseLine(value.toString())
+                                                     .filter(FlightWritable::isCancelledOrDelayed);
         if (opt.isPresent()) {
-            FlightWritable w = opt.get();
-            if (w.isCancelledOrDelayed()) {
-                context.write(w, value);
-            }
+            context.write(opt.get(), value);
         }
     }
 }

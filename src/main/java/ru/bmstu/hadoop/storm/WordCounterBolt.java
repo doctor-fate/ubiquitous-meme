@@ -25,10 +25,7 @@ public class WordCounterBolt extends BaseBasicBolt {
     }
 
     private void sync() {
-        for (Map.Entry<String, Integer> e : dictionary.entrySet()) {
-            System.out.println(e);
-            System.out.flush();
-        }
+        dictionary.entrySet().forEach(System.out::println);
         dictionary.clear();
     }
 

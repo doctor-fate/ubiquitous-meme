@@ -1,8 +1,6 @@
 package ru.bmstu.hadoop.storm;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import org.apache.storm.Config;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -24,8 +22,7 @@ public class SentencesSpout extends BaseRichSpout {
         processed = (String) conf.get(PROCESSED_DIR);
         sources = Files.fileTreeTraverser().children(new File((String) conf.get(POLL_DIR))).iterator();
         send = new HashSet<>();
-
-        nextFile();
+        reader = nextFile();
     }
 
     @Override
@@ -79,7 +76,7 @@ public class SentencesSpout extends BaseRichSpout {
     private void sync() {
         collector.emit("sync", new Values());
         moveFile();
-        nextFile();
+        reader = nextFile();
     }
 
     private void moveFile() {
@@ -90,25 +87,23 @@ public class SentencesSpout extends BaseRichSpout {
         }
     }
 
-    private void nextFile() {
+    private BufferedReader nextFile() {
         if (!sources.hasNext()) {
-            return;
+            return null;
         }
 
         current = sources.next();
         if (!current.isFile() || !current.canRead()) {
-            nextFile();
-            return;
+            return nextFile();
         }
-        FileInputStream stream;
+        FileReader r;
         try {
-            stream = new FileInputStream(current);
+            r = new FileReader(current);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            nextFile();
-            return;
+            return nextFile();
         }
-        reader = new BufferedReader(new InputStreamReader(stream, Charsets.UTF_8));
+        return new BufferedReader(r);
     }
 
     @Override

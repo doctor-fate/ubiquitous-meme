@@ -1,4 +1,4 @@
-package ru.bmstu.hadoop.hbase;
+package ru.bmstu.hadoop.hbase.filters;
 
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class FlightDelayFilter extends FilterBase {
-    FlightDelayFilter(float delay, byte[] family) {
+    public FlightDelayFilter(float delay, byte[] family) {
         this.family = family;
         this.delay = delay;
         data = new FilterRoundData();

@@ -3,7 +3,7 @@ package ru.bmstu.hadoop.spark;
 import scala.Serializable;
 
 public class OriginDestination implements Serializable {
-    static OriginDestination parseOriginDestination(String s) {
+    static OriginDestination parseLine(String s) {
         String[] split = s.split(",");
         OriginDestination d = new OriginDestination();
         try {
