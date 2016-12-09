@@ -22,8 +22,8 @@ public class Main implements Tool {
 
         job.setMapperClass(SortMapper.class);
         job.setReducerClass(SortReducer.class);
-        job.setPartitionerClass(FlightPartitioner.class);
-        job.setGroupingComparatorClass(FlightComparator.class);
+        job.setPartitionerClass(FlightDelayPartitioner.class);
+        job.setGroupingComparatorClass(FlightDelayComparator.class);
 
         job.setMapOutputKeyClass(FlightWritable.class);
         job.setMapOutputValueClass(Text.class);

@@ -8,16 +8,25 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FlightWritable implements Writable {
+    @SuppressWarnings("unused")
+    public FlightWritable() { }
+
+    private FlightWritable(int code, float delay) {
+        this.code = code;
+        this.delay = delay;
+    }
+
     static Optional<FlightWritable> parseLine(String s) {
         String[] split = s.split(",");
         FlightWritable w = null;
         try {
-            w = new FlightWritable();
-            w.code = Integer.parseInt(split[14]);
+            int code = Integer.parseInt(split[14]);
             boolean cancelled = split[19].equals("1.00");
+            float delay = 0.0f;
             if (!cancelled) {
-                w.delay = Float.parseFloat(split[18]);
+                delay = Float.parseFloat(split[18]);
             }
+            w = new FlightWritable(code, delay);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

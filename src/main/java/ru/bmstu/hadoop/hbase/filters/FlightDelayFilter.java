@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class FlightDelayFilter extends FilterBase {
+
     public FlightDelayFilter(float delay, byte[] family) {
         this.family = family;
         this.delay = delay;
@@ -51,7 +52,7 @@ public class FlightDelayFilter extends FilterBase {
             return ReturnCode.NEXT_ROW;
         }
 
-        if (CellUtil.matchingColumn(v, family, Bytes.toBytes("arr_delay_new"))) {
+        if (CellUtil.matchingColumn(v, family, DELAY_COLUMN)) {
             String d = new String(CellUtil.cloneValue(v));
             float vd = 0.0f;
             try {
@@ -61,7 +62,7 @@ public class FlightDelayFilter extends FilterBase {
             data.setDelayed(vd);
         }
 
-        if (CellUtil.matchingColumn(v, family, Bytes.toBytes("cancelled"))) {
+        if (CellUtil.matchingColumn(v, family, CANCELLED_COLUMNS)) {
             String d = new String(CellUtil.cloneValue(v));
             data.setCancelled(d);
         }
@@ -100,6 +101,9 @@ public class FlightDelayFilter extends FilterBase {
         private boolean foundCancelledColumn;
         private boolean cancelled;
     }
+
+    private static final byte[] DELAY_COLUMN = Bytes.toBytes("arr_delay_new");
+    private static final byte[] CANCELLED_COLUMNS = Bytes.toBytes("cancelled");
 
     private float delay;
     private byte[] family;

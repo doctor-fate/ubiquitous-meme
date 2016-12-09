@@ -3,8 +3,8 @@ package ru.bmstu.hadoop.sort;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
-public class FlightComparator extends WritableComparator {
-    public FlightComparator() {
+public class FlightDelayComparator extends WritableComparator {
+    public FlightDelayComparator() {
         super(FlightWritable.class, true);
     }
 

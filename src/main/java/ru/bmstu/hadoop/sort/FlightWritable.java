@@ -9,17 +9,28 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FlightWritable implements WritableComparable<FlightWritable> {
+    @SuppressWarnings("unused")
+    public FlightWritable() { }
+
+    private FlightWritable(int destination, boolean cancelled, float time, float delay) {
+        this.destination = destination;
+        this.cancelled = cancelled;
+        this.time = time;
+        this.delay = delay;
+    }
+
     static Optional<FlightWritable> parseLine(String s) {
         String[] split = s.split(",");
         FlightWritable w = null;
         try {
-            w = new FlightWritable();
-            w.destination = Integer.parseInt(split[14]);
-            w.cancelled = split[19].equals("1.00");
-            if (!w.cancelled) {
-                w.time = Float.parseFloat(split[21]);
-                w.delay = Float.parseFloat(split[18]);
+            int destination = Integer.parseInt(split[14]);
+            boolean cancelled = split[19].equals("1.00");
+            float time = 0.0f, delay = 0.0f;
+            if (!cancelled) {
+                time = Float.parseFloat(split[21]);
+                delay = Float.parseFloat(split[18]);
             }
+            w = new FlightWritable(destination, cancelled, time, delay);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

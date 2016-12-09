@@ -3,8 +3,8 @@ package ru.bmstu.hadoop.join;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
-public class CompositeComparator extends WritableComparator {
-    public CompositeComparator() {
+public class CompositeAirportComparator extends WritableComparator {
+    public CompositeAirportComparator() {
         super(CompositeWritable.class, true);
     }
 

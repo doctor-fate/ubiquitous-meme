@@ -21,8 +21,8 @@ public class Main implements Tool {
         job.setJarByClass(Main.class);
 
         job.setReducerClass(JoinReducer.class);
-        job.setPartitionerClass(CompositePartitioner.class);
-        job.setGroupingComparatorClass(CompositeComparator.class);
+        job.setPartitionerClass(CompositeAirportPartitioner.class);
+        job.setGroupingComparatorClass(CompositeAirportComparator.class);
 
         job.setMapOutputKeyClass(CompositeWritable.class);
         job.setMapOutputValueClass(FlightAirportWritable.class);

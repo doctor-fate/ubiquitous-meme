@@ -8,13 +8,21 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class AirportWritable implements Writable {
+    @SuppressWarnings("unused")
+    public AirportWritable() { }
+
+    private AirportWritable(int code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
     static Optional<AirportWritable> parseLine(String s) {
         String[] split = s.split(",", 2);
         AirportWritable w = null;
         try {
-            w = new AirportWritable();
-            w.code = Integer.parseInt(split[0].replaceAll("\"", ""));
-            w.name = split[1].trim();
+            int code = Integer.parseInt(split[0].replaceAll("\"", ""));
+            String name = split[1].trim();
+            w = new AirportWritable(code, name);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
