@@ -1,5 +1,7 @@
 package ru.bmstu.hadoop.join;
 
+import org.apache.commons.validator.routines.FloatValidator;
+import org.apache.commons.validator.routines.IntegerValidator;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class FlightWritable implements Writable {
+
     @SuppressWarnings("unused")
     public FlightWritable() { }
 
@@ -17,21 +20,25 @@ public class FlightWritable implements Writable {
     }
 
     static Optional<FlightWritable> parseLine(String s) {
-        String[] split = s.split(",");
-        FlightWritable w = null;
-        try {
-            int code = Integer.parseInt(split[14]);
-            boolean cancelled = split[19].equals("1.00");
-            float delay = 0.0f;
-            if (!cancelled) {
-                delay = Float.parseFloat(split[18]);
+        String[] split = s.replaceAll("\"", "").split(",");
+
+        IntegerValidator iv = IntegerValidator.getInstance();
+        if (!iv.isValid(split[CODE_CSV_IDX])) {
+            return Optional.empty();
+        }
+        int code = iv.validate(split[CODE_CSV_IDX]);
+
+        float delay = 0.0f;
+        boolean cancelled = split[CANCELLED_CSV_IDX].equals("1.00");
+        if (!cancelled) {
+            FloatValidator fv = FloatValidator.getInstance();
+            if (!fv.isValid(split[DELAY_CSV_IDX])) {
+                return Optional.empty();
             }
-            w = new FlightWritable(code, delay);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+            delay = fv.validate(split[DELAY_CSV_IDX]);
         }
 
-        return Optional.ofNullable(w);
+        return Optional.of(new FlightWritable(code, delay));
     }
 
     public void write(DataOutput out) throws IOException {
@@ -55,6 +62,10 @@ public class FlightWritable implements Writable {
     int getCode() {
         return code;
     }
+
+    private static final int CODE_CSV_IDX = 14;
+    private static final int CANCELLED_CSV_IDX = 19;
+    private static final int DELAY_CSV_IDX = 18;
 
     private int code;
     private float delay;

@@ -2,14 +2,14 @@ package ru.bmstu.hadoop.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import ru.bmstu.hadoop.hbase.actors.FlightsActor;
+import ru.bmstu.hadoop.hbase.actors.FlightsHTableExecutor;
 
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         Configuration configuration = HBaseConfiguration.create();
-        FlightsActor actor = new FlightsActor(configuration);
+        FlightsHTableExecutor actor = new FlightsHTableExecutor(configuration);
         actor.createTable();
         actor.setContentFromCSV(args[0]);
 

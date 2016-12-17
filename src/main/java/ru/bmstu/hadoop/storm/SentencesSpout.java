@@ -68,9 +68,13 @@ public class SentencesSpout extends BaseRichSpout {
     @Override
     public void ack(Object id) {
         send.remove(id);
-        if (send.isEmpty() && !readyToRead()) {
+        if (readyToSync()) {
             sync();
         }
+    }
+
+    private boolean readyToSync() {
+        return send.isEmpty() && !readyToRead();
     }
 
     private void sync() {

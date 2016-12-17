@@ -1,5 +1,6 @@
 package ru.bmstu.hadoop.hbase.filters;
 
+import org.apache.commons.validator.routines.FloatValidator;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.exceptions.DeserializationException;
@@ -55,9 +56,10 @@ public class FlightDelayFilter extends FilterBase {
         if (CellUtil.matchingColumn(v, family, DELAY_COLUMN)) {
             String d = new String(CellUtil.cloneValue(v));
             float vd = 0.0f;
-            try {
-                vd = Float.parseFloat(d);
-            } catch (NumberFormatException ignored) { }
+            FloatValidator fv = FloatValidator.getInstance();
+            if (fv.isValid(d)) {
+                vd = fv.validate(d);
+            }
 
             data.setDelayed(vd);
         }

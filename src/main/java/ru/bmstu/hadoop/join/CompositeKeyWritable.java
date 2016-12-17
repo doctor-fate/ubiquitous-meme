@@ -7,16 +7,16 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class CompositeWritable implements WritableComparable<CompositeWritable> {
+public class CompositeKeyWritable implements WritableComparable<CompositeKeyWritable> {
     @SuppressWarnings("unused")
-    CompositeWritable() { }
+    CompositeKeyWritable() { }
 
-    CompositeWritable(int airport, int flag) {
+    CompositeKeyWritable(int airport, int flag) {
         this.airport = airport;
         this.flag = flag;
     }
 
-    public int compareTo(@NotNull CompositeWritable o) {
+    public int compareTo(@NotNull CompositeKeyWritable o) {
         int r = airport - o.airport;
         if (r == 0) {
             return flag - o.flag;
@@ -41,7 +41,7 @@ public class CompositeWritable implements WritableComparable<CompositeWritable> 
             return false;
         }
 
-        CompositeWritable that = (CompositeWritable) o;
+        CompositeKeyWritable that = (CompositeKeyWritable) o;
         return airport == that.airport && flag == that.flag;
     }
 

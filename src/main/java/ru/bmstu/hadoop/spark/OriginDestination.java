@@ -1,19 +1,26 @@
 package ru.bmstu.hadoop.spark;
 
+import org.apache.commons.validator.routines.IntegerValidator;
 import scala.Serializable;
 
 public class OriginDestination implements Serializable {
+
+    private OriginDestination(int origin, int destination) {
+        this.origin = origin;
+        this.destination = destination;
+    }
+
     static OriginDestination parseLine(String s) {
         String[] split = s.split(",");
-        OriginDestination d = new OriginDestination();
-        try {
-            d.origin = Integer.parseInt(split[11]);
-            d.destination = Integer.parseInt(split[14]);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+
+        int origin = 0, destination = 0;
+        IntegerValidator v = IntegerValidator.getInstance();
+        if (v.isValid(split[ORIGIN_CSV_IDX]) && v.isValid(split[DESTINATION_CSV_IDX])) {
+            origin = v.validate(split[ORIGIN_CSV_IDX]);
+            destination = v.validate(split[DESTINATION_CSV_IDX]);
         }
 
-        return d;
+        return new OriginDestination(origin, destination);
     }
 
     @Override
@@ -47,6 +54,9 @@ public class OriginDestination implements Serializable {
     int getDestination() {
         return destination;
     }
+
+    private static final int ORIGIN_CSV_IDX = 11;
+    private static final int DESTINATION_CSV_IDX = 14;
 
     private int origin;
     private int destination;

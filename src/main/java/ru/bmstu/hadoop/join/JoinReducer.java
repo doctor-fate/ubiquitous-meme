@@ -6,9 +6,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 
-public class JoinReducer extends Reducer<CompositeWritable, FlightAirportWritable, Text, Text> {
+public class JoinReducer extends Reducer<CompositeKeyWritable, FlightAirportWritable, Text, Text> {
     @Override
-    protected void reduce(CompositeWritable key, Iterable<FlightAirportWritable> values, Context context) throws IOException, InterruptedException {
+    protected void reduce(CompositeKeyWritable key, Iterable<FlightAirportWritable> values, Context context) throws IOException, InterruptedException {
         float min = Float.MAX_VALUE, max = Float.MIN_VALUE, avg = 0;
         int n = 0;
 

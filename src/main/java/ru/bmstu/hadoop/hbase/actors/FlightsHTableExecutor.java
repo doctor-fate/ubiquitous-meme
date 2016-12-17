@@ -14,13 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-public class FlightsActor {
+public class FlightsHTableExecutor {
     static {
         TABLE_NAME = TableName.valueOf("FLIGHTS");
         FAMILY = new byte[]{ 'f', 'l', 'i', 'g', 'h', 't' };
     }
 
-    public FlightsActor(Configuration configuration) {
+    public FlightsHTableExecutor(Configuration configuration) {
         this.configuration = configuration;
     }
 
