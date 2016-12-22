@@ -11,26 +11,28 @@ public class Statistics implements Serializable {
 
     private Statistics() { }
 
-    private Statistics(Statistics s, Flight f) {
-        all = s.all + 1;
-        if (f.isCancelledOrDelayed()) {
-            delayed = s.delayed + 1;
-            max = Math.max(s.max, f.getDelay());
-        }
-    }
-
-    private Statistics(Statistics a, Statistics b) {
-        delayed = a.delayed + b.delayed;
-        all = a.all + b.all;
-        max = Math.max(a.max, b.max);
+    private Statistics(int delayed, int all, float max) {
+        this.delayed = delayed;
+        this.all = all;
+        this.max = max;
     }
 
     Statistics add(Flight f) {
-        return new Statistics(this, f);
+        int all = this.all + 1;
+        int delayed = this.delayed;
+        float max = this.max;
+        if (f.isCancelledOrDelayed()) {
+            delayed++;
+            max = Math.max(max, f.getDelay());
+        }
+        return new Statistics(delayed, all, max);
     }
 
     Statistics merge(Statistics s) {
-        return new Statistics(this, s);
+        int delayed = this.delayed + s.delayed;
+        int all = this.all + s.all;
+        float max = this.max + s.max;
+        return new Statistics(delayed, all, max);
     }
 
     @Override

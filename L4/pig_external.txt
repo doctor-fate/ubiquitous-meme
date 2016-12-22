@@ -1,0 +1,60 @@
+FLIGHTS = LOAD 'flights.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage();
+
+FLIGHTS = FOREACH FLIGHTS GENERATE
+    (int) $3 AS day, (int) $11, (int) $14,
+    (float) $19 AS cancelled, (float) $18 AS delay;
+
+FLIGHTS = FOREACH FLIGHTS GENERATE
+    day,
+    ($1 < $2 ? ($1, $2) : ($2, $1)) AS route,
+    cancelled, delay;
+
+FLIGHTS = FILTER FLIGHTS BY route != (0, 0);
+
+/***************************************************************************************/
+
+GROUPED_FLIGHTS_BY_DAY_ROUTE = GROUP FLIGHTS BY (day, route);
+
+AGGREGATED_FLIGHTS = FOREACH GROUPED_FLIGHTS_BY_DAY_ROUTE {
+
+    CANCELLED_OR_DELAYED = FILTER FLIGHTS BY cancelled == 1.00 OR delay > 0;
+
+    GENERATE FLATTEN(group) AS (day:int, route:(int, int)),
+             COUNT(CANCELLED_OR_DELAYED) AS cancelled_or_delayed;
+
+}
+
+/***************************************************************************************/
+
+GROUPED_AGGREGATED_FLIGHTS_BY_DAY = GROUP AGGREGATED_FLIGHTS BY day;
+
+AGGREGATED_FLIGHTS = FOREACH GROUPED_AGGREGATED_FLIGHTS_BY_DAY {
+
+    SORTED = ORDER AGGREGATED_FLIGHTS BY cancelled_or_delayed DESC;
+    LIMITED = LIMIT SORTED 1;
+
+    GENERATE FLATTEN(LIMITED) AS (day:int, route:(int, int), cancelled_or_delayed:int);
+}
+
+dump AGGREGATED_FLIGHTS;
+
+/***************************************************************************************/
+
+/*AIRPORTS = LOAD 'airports.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage() AS (code:int, name:chararray);
+AIRPORTS = FILTER AIRPORTS BY code > 0;
+AIRPORTS = FOREACH AIRPORTS GENERATE code, CONCAT(CONCAT('"', name), '"') AS name;
+
+AIRPORTS_FLIGHTS = JOIN AIRPORTS BY code, AGGREGATED_FLIGHTS by route.$0;
+AIRPORTS_FLIGHTS = FOREACH AIRPORTS_FLIGHTS GENERATE
+    AGGREGATED_FLIGHTS::day AS day,
+    (AIRPORTS::name, AGGREGATED_FLIGHTS::route.$1) AS route,
+    AGGREGATED_FLIGHTS::cancelled_or_delayed as cancelled_or_delayed;
+
+AIRPORTS_FLIGHTS = JOIN AIRPORTS BY code, AIRPORTS_FLIGHTS by route.$1;
+AIRPORTS_FLIGHTS = FOREACH AIRPORTS_FLIGHTS GENERATE
+        AIRPORTS_FLIGHTS::day AS day,
+        (AIRPORTS_FLIGHTS::route.$0, AIRPORTS::name) AS route,
+        AIRPORTS_FLIGHTS::cancelled_or_delayed as cancelled_or_delayed;
+
+AIRPORTS_FLIGHTS = ORDER AIRPORTS_FLIGHTS BY day ASC;
+dump AIRPORTS_FLIGHTS;*/
